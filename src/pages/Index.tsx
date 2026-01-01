@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Play, RotateCcw, Mic, MicOff, Send, Keyboard } from 'lucide-react';
+import { ArrowRight, RotateCcw, Mic, MicOff, Send, Keyboard } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import VoiceOrb from '@/components/VoiceOrb';
@@ -10,6 +10,7 @@ import CareerReportView from '@/components/CareerReportView';
 import ProgressTracker from '@/components/ProgressTracker';
 import { useConversation } from '@/hooks/useConversation';
 import { speechService } from '@/services/speechService';
+
 const Index = () => {
   const {
     phase,
@@ -67,120 +68,122 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="border-b border-border/50 bg-card/50 backdrop-blur-sm">
-        <div className="container mx-auto flex h-16 items-center justify-between px-4">
-          <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-accent">
-              <span className="text-lg font-bold text-primary-foreground">CD</span>
+      <header className="border-b border-border">
+        <div className="max-w-7xl mx-auto flex h-16 items-center justify-between px-6">
+          <div className="flex items-center gap-4">
+            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-foreground">
+              <span className="text-sm font-semibold text-background">CD</span>
             </div>
             <div>
-              <h1 className="font-display text-lg font-semibold text-foreground">Career Discovery</h1>
+              <h1 className="text-sm font-semibold text-foreground tracking-tight">Career Discovery</h1>
               <p className="text-xs text-muted-foreground">AI-Powered Guidance</p>
             </div>
           </div>
           
           {hasStarted && (
-            <Button variant="ghost" size="sm" onClick={handleReset} className="gap-2">
+            <Button variant="ghost" size="sm" onClick={handleReset} className="gap-2 text-muted-foreground hover:text-foreground">
               <RotateCcw className="h-4 w-4" />
               Start Over
             </Button>
           )}
         </div>
-        </header>
+      </header>
 
-        {/* Progress Tracker - shown during conversation */}
-        {hasStarted && phase !== 'complete' && (
-          <div className="border-b border-border/50 bg-card/30">
+      {/* Progress Tracker */}
+      {hasStarted && phase !== 'complete' && (
+        <div className="border-b border-border bg-card">
+          <div className="max-w-4xl mx-auto">
             <ProgressTracker currentPhase={phase} />
           </div>
-        )}
-        <AnimatePresence mode="wait">
-          {!hasStarted ? (
-            /* Welcome Screen */
-            <motion.div
-              key="welcome"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              className="flex min-h-[calc(100vh-4rem)] flex-col items-center justify-center px-4"
-            >
+        </div>
+      )}
+
+      <AnimatePresence mode="wait">
+        {!hasStarted ? (
+          /* Welcome Screen */
+          <motion.div
+            key="welcome"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="flex min-h-[calc(100vh-4rem)] flex-col items-center justify-center px-6"
+          >
+            <div className="max-w-xl mx-auto text-center">
               <motion.div
-                initial={{ scale: 0.8, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                transition={{ delay: 0.2, type: 'spring', stiffness: 200 }}
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.1 }}
                 className="mb-8"
               >
-                <div className="relative">
-                  <div className="absolute inset-0 animate-pulse rounded-full bg-primary/20 blur-3xl" />
-                  <div className="relative flex h-32 w-32 items-center justify-center rounded-full bg-gradient-to-br from-primary via-accent to-secondary">
-                    <Play className="h-12 w-12 text-primary-foreground" />
-                  </div>
+                <div className="w-20 h-20 mx-auto rounded-2xl bg-foreground flex items-center justify-center mb-8">
+                  <Mic className="h-8 w-8 text-background" strokeWidth={1.5} />
                 </div>
               </motion.div>
 
               <motion.h1
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.3 }}
-                className="mb-4 text-center font-display text-4xl font-bold text-foreground md:text-5xl"
+                transition={{ delay: 0.2 }}
+                className="text-4xl md:text-5xl font-semibold text-foreground tracking-tight mb-4"
               >
-                Discover Your <span className="text-primary">Career Path</span>
+                Discover Your Path
               </motion.h1>
 
               <motion.p
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.4 }}
-                className="mb-8 max-w-md text-center text-lg text-muted-foreground"
+                transition={{ delay: 0.3 }}
+                className="text-lg text-muted-foreground mb-12 max-w-md mx-auto leading-relaxed"
               >
-                Have a voice conversation with our AI counselor to explore careers that match your interests, strengths, and goals.
+                Have a conversation with our AI counselor to explore careers that match your unique profile.
               </motion.p>
 
               <motion.div
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.5 }}
+                transition={{ delay: 0.4 }}
               >
                 <Button
                   size="lg"
                   onClick={handleStart}
-                  className="gap-2 bg-gradient-to-r from-primary to-accent px-8 py-6 text-lg font-semibold shadow-lg shadow-primary/25 transition-all hover:shadow-xl hover:shadow-primary/30"
+                  className="gap-3 px-8 py-6 text-base font-medium bg-foreground text-background hover:bg-foreground/90"
                 >
-                  <Mic className="h-5 w-5" />
-                  Start Conversation
+                  Begin Discovery
+                  <ArrowRight className="h-4 w-4" />
                 </Button>
               </motion.div>
 
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                transition={{ delay: 0.7 }}
-                className="mt-12 grid max-w-2xl grid-cols-3 gap-6 text-center"
+                transition={{ delay: 0.6 }}
+                className="mt-16 flex justify-center gap-12 text-center"
               >
                 {[
-                  { title: '10 min', subtitle: 'Conversation' },
-                  { title: 'AI-Powered', subtitle: 'Analysis' },
-                  { title: 'Personalized', subtitle: 'Report' },
+                  { value: '10 min', label: 'Conversation' },
+                  { value: 'AI', label: 'Analysis' },
+                  { value: 'Custom', label: 'Report' },
                 ].map((item, i) => (
-                  <div key={i} className="rounded-xl bg-card/50 p-4">
-                    <div className="text-xl font-bold text-primary">{item.title}</div>
-                    <div className="text-sm text-muted-foreground">{item.subtitle}</div>
+                  <div key={i}>
+                    <div className="text-lg font-semibold text-foreground">{item.value}</div>
+                    <div className="text-xs text-muted-foreground mt-1">{item.label}</div>
                   </div>
                 ))}
               </motion.div>
-            </motion.div>
-          ) : (
+            </div>
+          </motion.div>
+        ) : (
           /* Conversation Screen */
           <motion.div
             key="conversation"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="flex h-[calc(100vh-4rem)]"
+            className="flex h-[calc(100vh-8rem)]"
           >
             {/* Main Conversation Area */}
             <div className="flex flex-1 flex-col">
               {/* Voice Orb Section */}
-              <div className="flex flex-1 flex-col items-center justify-center p-8">
+              <div className="flex flex-1 flex-col items-center justify-center px-6 py-12">
                 <VoiceOrb
                   isListening={isListening}
                   isSpeaking={isSpeaking}
@@ -188,82 +191,80 @@ const Index = () => {
                   onClick={handleMicToggle}
                 />
 
-                <div className="mt-8 h-20 text-center">
+                <div className="mt-8 h-16 text-center">
                   {currentTranscript && (
                     <motion.p
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      className="text-lg text-muted-foreground italic"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      className="text-base text-muted-foreground"
                     >
                       "{currentTranscript}"
                     </motion.p>
                   )}
                   {isProcessing && (
-                    <p className="text-muted-foreground">Thinking...</p>
+                    <p className="text-muted-foreground text-sm">Processing...</p>
                   )}
                   {isSpeaking && (
-                    <p className="text-primary">Speaking...</p>
+                    <p className="text-foreground text-sm">Speaking...</p>
                   )}
                 </div>
 
                 {/* Input Controls */}
-                <div className="flex flex-col items-center gap-4">
+                <div className="flex flex-col items-center gap-4 mt-4">
                   {useTextInput || !speechSupport.stt ? (
-                    /* Text Input Mode */
-                    <form onSubmit={handleTextSubmit} className="flex w-full max-w-md gap-2">
+                    <form onSubmit={handleTextSubmit} className="flex w-full max-w-md gap-3">
                       <Input
                         value={textInput}
                         onChange={(e) => setTextInput(e.target.value)}
                         placeholder="Type your response..."
                         disabled={isProcessing || isSpeaking}
-                        className="flex-1"
+                        className="flex-1 h-11"
                       />
                       <Button
                         type="submit"
                         disabled={!textInput.trim() || isProcessing || isSpeaking}
+                        className="h-11 px-4"
                       >
                         <Send className="h-4 w-4" />
                       </Button>
                     </form>
                   ) : (
-                    /* Voice Input Mode */
                     <Button
                       size="lg"
                       variant={isListening ? 'destructive' : 'default'}
                       onClick={handleMicToggle}
                       disabled={isProcessing || isSpeaking}
-                      className="gap-2 px-8"
+                      className="gap-2 px-6"
                     >
                       {isListening ? (
                         <>
-                          <MicOff className="h-5 w-5" />
+                          <MicOff className="h-4 w-4" />
                           Stop
                         </>
                       ) : (
                         <>
-                          <Mic className="h-5 w-5" />
+                          <Mic className="h-4 w-4" />
                           Speak
                         </>
                       )}
                     </Button>
                   )}
 
-                  {/* Toggle between voice and text input */}
                   {speechSupport.stt && (
                     <Button
                       variant="ghost"
                       size="sm"
                       onClick={() => setUseTextInput(!useTextInput)}
-                      className="text-muted-foreground"
+                      className="text-muted-foreground hover:text-foreground text-xs"
                     >
                       {useTextInput ? (
                         <>
-                          <Mic className="mr-2 h-4 w-4" />
+                          <Mic className="mr-2 h-3 w-3" />
                           Switch to Voice
                         </>
                       ) : (
                         <>
-                          <Keyboard className="mr-2 h-4 w-4" />
+                          <Keyboard className="mr-2 h-3 w-3" />
                           Switch to Typing
                         </>
                       )}
@@ -273,7 +274,7 @@ const Index = () => {
               </div>
 
               {/* Conversation History */}
-              <div className="border-t border-border/50 bg-card/30">
+              <div className="border-t border-border bg-card h-48">
                 <ConversationDisplay
                   messages={messages}
                   currentTranscript={currentTranscript}
@@ -283,7 +284,7 @@ const Index = () => {
             </div>
 
             {/* Notes Side Panel */}
-            <div className="hidden w-80 border-l border-border/50 bg-card/30 lg:block xl:w-96">
+            <div className="hidden w-80 border-l border-border lg:block xl:w-96">
               <NotePanel notes={notes} currentPhase={phase} />
             </div>
           </motion.div>

@@ -1,8 +1,8 @@
-// Career Report View Component
 import React from 'react';
 import { motion } from 'framer-motion';
 import { CareerReport } from '@/types/conversation';
 import { Button } from '@/components/ui/button';
+import { Download, User, Target, ArrowRight } from 'lucide-react';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import ShareReportButton from '@/components/ShareReportButton';
@@ -25,7 +25,7 @@ const CareerReportView: React.FC<CareerReportViewProps> = ({ report, onRestart }
     try {
       const canvas = await html2canvas(reportRef.current, {
         scale: 2,
-        backgroundColor: '#ffffff',
+        backgroundColor: '#fafafa',
         useCORS: true,
       });
 
@@ -45,7 +45,7 @@ const CareerReportView: React.FC<CareerReportViewProps> = ({ report, onRestart }
       const imgY = 10;
 
       pdf.addImage(imgData, 'PNG', imgX, imgY, imgWidth * ratio, imgHeight * ratio);
-      pdf.save(`Career_Discovery_Report_${report.studentSnapshot.name.replace(/\s+/g, '_')}.pdf`);
+      pdf.save(`Career_Report_${report.studentSnapshot.name.replace(/\s+/g, '_')}.pdf`);
     } catch (error) {
       console.error('Error generating PDF:', error);
     }
@@ -56,46 +56,41 @@ const CareerReportView: React.FC<CareerReportViewProps> = ({ report, onRestart }
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background to-muted/50 p-4 md:p-8">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="max-w-4xl mx-auto"
-      >
-        {/* Header */}
-        <div className="text-center mb-8">
-          <motion.h1
-            className="text-3xl md:text-4xl font-bold gradient-text mb-2"
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-          >
-            Your Career Discovery Report
-          </motion.h1>
+    <div className="min-h-screen bg-background">
+      {/* Header */}
+      <div className="border-b border-border">
+        <div className="max-w-4xl mx-auto px-6 py-8">
           <motion.p
-            className="text-muted-foreground"
+            className="text-sm text-muted-foreground mb-2"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: 0.3 }}
           >
             Generated on {report.generatedAt.toLocaleDateString('en-US', {
-              weekday: 'long',
               year: 'numeric',
               month: 'long',
               day: 'numeric',
             })}
           </motion.p>
+          <motion.h1
+            className="text-3xl font-semibold text-foreground tracking-tight"
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+          >
+            Your Career Discovery Report
+          </motion.h1>
         </div>
+      </div>
 
-        {/* Report Content */}
-        <div ref={reportRef} className="bg-white rounded-2xl shadow-lg p-6 md:p-8 space-y-8">
+      {/* Report Content */}
+      <div className="max-w-4xl mx-auto px-6 py-12">
+        <div ref={reportRef} className="space-y-12">
           {/* Personality Badge */}
           {localReport.personalityBadge && (
             <motion.section
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.35 }}
+              transition={{ delay: 0.2 }}
             >
               <PersonalityBadgeCard 
                 badge={localReport.personalityBadge} 
@@ -106,44 +101,44 @@ const CareerReportView: React.FC<CareerReportViewProps> = ({ report, onRestart }
 
           {/* Student Snapshot */}
           <motion.section
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4 }}
+            transition={{ delay: 0.3 }}
           >
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-                <span className="text-xl">👤</span>
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center">
+                <User className="h-5 w-5 text-foreground" strokeWidth={1.5} />
               </div>
-              <h2 className="text-xl font-semibold text-gray-900">Student Snapshot</h2>
+              <h2 className="text-lg font-semibold text-foreground">Student Profile</h2>
             </div>
             
-            <div className="bg-gray-50 rounded-xl p-5 space-y-4">
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="bg-card rounded-xl border border-border p-6 space-y-6">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
                 <div>
-                  <p className="text-xs text-gray-500 uppercase tracking-wide">Name</p>
-                  <p className="font-medium text-gray-900">{report.studentSnapshot.name}</p>
+                  <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">Name</p>
+                  <p className="font-medium text-foreground">{report.studentSnapshot.name}</p>
                 </div>
                 <div>
-                  <p className="text-xs text-gray-500 uppercase tracking-wide">Grade</p>
-                  <p className="font-medium text-gray-900">{report.studentSnapshot.grade}</p>
+                  <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">Grade</p>
+                  <p className="font-medium text-foreground">{report.studentSnapshot.grade}</p>
                 </div>
                 <div>
-                  <p className="text-xs text-gray-500 uppercase tracking-wide">Board</p>
-                  <p className="font-medium text-gray-900">{report.studentSnapshot.board}</p>
+                  <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">Board</p>
+                  <p className="font-medium text-foreground">{report.studentSnapshot.board}</p>
                 </div>
                 <div>
-                  <p className="text-xs text-gray-500 uppercase tracking-wide">Country</p>
-                  <p className="font-medium text-gray-900">{report.studentSnapshot.country}</p>
+                  <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">Country</p>
+                  <p className="font-medium text-foreground">{report.studentSnapshot.country}</p>
                 </div>
               </div>
 
               <div>
-                <p className="text-xs text-gray-500 uppercase tracking-wide mb-2">Top Interests</p>
+                <p className="text-xs text-muted-foreground uppercase tracking-wider mb-3">Interests</p>
                 <div className="flex flex-wrap gap-2">
                   {report.studentSnapshot.topInterests.map((interest, i) => (
                     <span
                       key={i}
-                      className="px-3 py-1 bg-amber-100 text-amber-700 rounded-full text-sm font-medium"
+                      className="px-3 py-1.5 bg-muted text-foreground rounded-full text-sm font-medium"
                     >
                       {interest}
                     </span>
@@ -152,12 +147,12 @@ const CareerReportView: React.FC<CareerReportViewProps> = ({ report, onRestart }
               </div>
 
               <div>
-                <p className="text-xs text-gray-500 uppercase tracking-wide mb-2">Key Strengths</p>
+                <p className="text-xs text-muted-foreground uppercase tracking-wider mb-3">Strengths</p>
                 <div className="flex flex-wrap gap-2">
                   {report.studentSnapshot.keyStrengths.map((strength, i) => (
                     <span
                       key={i}
-                      className="px-3 py-1 bg-emerald-100 text-emerald-700 rounded-full text-sm font-medium"
+                      className="px-3 py-1.5 bg-muted text-foreground rounded-full text-sm font-medium"
                     >
                       {strength}
                     </span>
@@ -169,40 +164,42 @@ const CareerReportView: React.FC<CareerReportViewProps> = ({ report, onRestart }
 
           {/* Recommended Career Paths */}
           <motion.section
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5 }}
+            transition={{ delay: 0.4 }}
           >
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-10 h-10 rounded-full bg-secondary/10 flex items-center justify-center">
-                <span className="text-xl">🎯</span>
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center">
+                <Target className="h-5 w-5 text-foreground" strokeWidth={1.5} />
               </div>
-              <h2 className="text-xl font-semibold text-gray-900">Top Recommended Career Paths</h2>
+              <h2 className="text-lg font-semibold text-foreground">Recommended Career Paths</h2>
             </div>
 
             <div className="space-y-6">
               {report.recommendedPaths.map((path, index) => (
                 <motion.div
                   key={index}
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.6 + index * 0.1 }}
-                  className="border border-gray-200 rounded-xl p-5 hover:border-primary/50 transition-colors"
+                  initial={{ opacity: 0, y: 12 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.5 + index * 0.1 }}
+                  className="bg-card border border-border rounded-xl p-6"
                 >
-                  <div className="flex items-start gap-4">
-                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-white font-bold text-lg shrink-0">
+                  <div className="flex items-start gap-5">
+                    <div className="w-10 h-10 rounded-lg bg-foreground flex items-center justify-center text-background font-semibold text-sm shrink-0">
                       {index + 1}
                     </div>
-                    <div className="flex-1">
-                      <h3 className="font-semibold text-lg text-gray-900">{path.name}</h3>
-                      <p className="text-sm text-gray-500 mb-3">{path.cluster}</p>
+                    <div className="flex-1 space-y-4">
+                      <div>
+                        <h3 className="font-semibold text-lg text-foreground">{path.name}</h3>
+                        <p className="text-sm text-muted-foreground">{path.cluster}</p>
+                      </div>
                       
-                      <div className="mb-3">
-                        <p className="text-xs text-gray-500 uppercase tracking-wide mb-1">Why This Fits You</p>
-                        <ul className="space-y-1">
+                      <div>
+                        <p className="text-xs text-muted-foreground uppercase tracking-wider mb-2">Why This Fits</p>
+                        <ul className="space-y-1.5">
                           {path.fitReasons.map((reason, i) => (
-                            <li key={i} className="text-sm text-gray-700 flex items-start gap-2">
-                              <span className="text-primary mt-1">•</span>
+                            <li key={i} className="text-sm text-foreground flex items-start gap-2">
+                              <span className="text-muted-foreground mt-1.5">·</span>
                               {reason}
                             </li>
                           ))}
@@ -210,21 +207,18 @@ const CareerReportView: React.FC<CareerReportViewProps> = ({ report, onRestart }
                       </div>
 
                       <div>
-                        <p className="text-xs text-gray-500 uppercase tracking-wide mb-1">Application Readiness Hints</p>
-                        <ul className="space-y-1">
+                        <p className="text-xs text-muted-foreground uppercase tracking-wider mb-2">Next Steps</p>
+                        <ul className="space-y-1.5">
                           {path.applicationHints.map((hint, i) => (
-                            <li key={i} className="text-sm text-gray-600 flex items-start gap-2">
-                              <span className="text-secondary mt-1">→</span>
+                            <li key={i} className="text-sm text-muted-foreground flex items-start gap-2">
+                              <ArrowRight className="h-3 w-3 mt-1.5 shrink-0" />
                               {hint}
                             </li>
                           ))}
                         </ul>
                       </div>
 
-                      {/* Day in the Life Videos */}
                       <DayInLifeSection careerPath={path} index={index} />
-
-                      {/* College/Course Mapping */}
                       <CollegeCourseMapping careerPath={path} index={index} />
                     </div>
                   </div>
@@ -236,19 +230,17 @@ const CareerReportView: React.FC<CareerReportViewProps> = ({ report, onRestart }
 
         {/* Action Buttons */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.8 }}
-          className="flex flex-col sm:flex-row gap-4 justify-center mt-8"
+          transition={{ delay: 0.7 }}
+          className="flex flex-col sm:flex-row gap-4 justify-center mt-12 pt-12 border-t border-border"
         >
           <Button
             onClick={handleDownloadPDF}
-            className="btn-primary px-8 py-6 text-lg rounded-xl"
+            className="gap-2 px-6 py-5"
           >
-            <svg className="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-            </svg>
-            Download PDF Report
+            <Download className="w-4 h-4" />
+            Download PDF
           </Button>
           
           <ShareReportButton 
@@ -259,12 +251,12 @@ const CareerReportView: React.FC<CareerReportViewProps> = ({ report, onRestart }
           <Button
             onClick={onRestart}
             variant="outline"
-            className="px-8 py-6 text-lg rounded-xl"
+            className="px-6 py-5"
           >
             Start New Discovery
           </Button>
         </motion.div>
-      </motion.div>
+      </div>
     </div>
   );
 };
