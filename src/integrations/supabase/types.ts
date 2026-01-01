@@ -14,7 +14,51 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      career_reports: {
+        Row: {
+          created_at: string
+          id: string
+          key_strengths: string[] | null
+          personality_description: string | null
+          personality_type: string | null
+          recommended_paths: Json
+          share_id: string
+          student_board: string | null
+          student_country: string | null
+          student_grade: string | null
+          student_name: string
+          top_interests: string[] | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          key_strengths?: string[] | null
+          personality_description?: string | null
+          personality_type?: string | null
+          recommended_paths?: Json
+          share_id?: string
+          student_board?: string | null
+          student_country?: string | null
+          student_grade?: string | null
+          student_name: string
+          top_interests?: string[] | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          key_strengths?: string[] | null
+          personality_description?: string | null
+          personality_type?: string | null
+          recommended_paths?: Json
+          share_id?: string
+          student_board?: string | null
+          student_country?: string | null
+          student_grade?: string | null
+          student_name?: string
+          top_interests?: string[] | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
