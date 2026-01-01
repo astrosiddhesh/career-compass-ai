@@ -1,5 +1,7 @@
 import { useState, useCallback, useRef } from 'react';
 import { speechService } from '@/services/speechService';
+import { supabase } from '@/integrations/supabase/client';
+import { toast } from 'sonner';
 import {
   ConversationMessage,
   StudentNote,
@@ -9,53 +11,6 @@ import {
 } from '@/types/conversation';
 
 const generateId = () => Math.random().toString(36).substring(2, 15);
-
-const SYSTEM_PROMPT = `You are a friendly, engaging career counselor AI helping high school students discover their ideal career paths. You are conducting a voice-based conversation, so keep responses conversational and natural - not too long.
-
-Your conversation should flow through these phases:
-1. WELCOME: Warmly greet the student and explain you'll help them discover career paths
-2. BASIC_INFO: Ask for name, grade, current board/curriculum, and country
-3. INTERESTS: Explore favorite subjects, activities, hobbies, what they enjoy/dislike about school
-4. STRENGTHS: Understand how they approach problems, people, creativity, structure
-5. PREFERENCES: Work preferences - people vs data vs ideas vs things, indoor/outdoor, travel
-6. CAREER_EXPLORATION: Based on answers, propose 3-5 career clusters and ask scenario questions
-7. SUMMARY: Wrap up with 2-3 prioritized career paths
-
-Guidelines:
-- Be encouraging and positive
-- Ask one question at a time
-- Keep responses under 3 sentences when asking questions
-- Show genuine interest in their answers
-- Use their name once you know it
-- For career exploration, use "Imagine you're..." scenarios
-
-IMPORTANT: Include structured notes in your response using this format:
-<NOTE category="basic_info|interests|strengths|preferences|career_match" title="Short Title">Content of the note</NOTE>
-
-Also indicate the current phase:
-<PHASE>welcome|basic_info|interests|strengths|preferences|career_exploration|summary</PHASE>
-
-When you reach the SUMMARY phase, also include:
-<REPORT>
-{
-  "studentSnapshot": {
-    "name": "Student Name",
-    "grade": "Grade",
-    "board": "Board/Curriculum",
-    "country": "Country",
-    "topInterests": ["Interest 1", "Interest 2", "Interest 3"],
-    "keyStrengths": ["Strength 1", "Strength 2", "Strength 3", "Strength 4", "Strength 5"]
-  },
-  "recommendedPaths": [
-    {
-      "name": "Career Path Name",
-      "cluster": "Career Cluster",
-      "fitReasons": ["Reason 1", "Reason 2", "Reason 3"],
-      "applicationHints": ["Hint 1", "Hint 2"]
-    }
-  ]
-}
-</REPORT>`;
 
 export function useConversation() {
   const [state, setState] = useState<ConversationState>({
@@ -69,9 +24,7 @@ export function useConversation() {
   });
 
   const [currentTranscript, setCurrentTranscript] = useState('');
-  const conversationHistory = useRef<Array<{ role: string; content: string }>>([
-    { role: 'system', content: SYSTEM_PROMPT },
-  ]);
+  const conversationHistory = useRef<Array<{ role: string; content: string }>>([]);
 
   const parseAIResponse = useCallback((response: string) => {
     const notes: StudentNote[] = [];
@@ -143,27 +96,20 @@ export function useConversation() {
     conversationHistory.current.push({ role: 'user', content: userMessage });
 
     try {
-      const response = await fetch(
-        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/career-chat`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
-          },
-          body: JSON.stringify({
-            messages: conversationHistory.current,
-          }),
-        }
-      );
+      const { data, error } = await supabase.functions.invoke('career-chat', {
+        body: { messages: conversationHistory.current },
+      });
 
-      if (!response.ok) {
-        throw new Error('Failed to get AI response');
+      if (error) {
+        console.error('Edge function error:', error);
+        throw new Error(error.message || 'Failed to get AI response');
       }
 
-      const data = await response.json();
-      const aiResponse = data.response;
+      if (data?.error) {
+        throw new Error(data.error);
+      }
 
+      const aiResponse = data.response;
       conversationHistory.current.push({ role: 'assistant', content: aiResponse });
 
       const parsed = parseAIResponse(aiResponse);
@@ -196,6 +142,7 @@ export function useConversation() {
       });
     } catch (error) {
       console.error('Error sending message:', error);
+      toast.error(error instanceof Error ? error.message : 'Failed to get response');
       setState((prev) => ({ ...prev, isProcessing: false }));
     }
   }, [parseAIResponse]);
@@ -217,6 +164,8 @@ export function useConversation() {
 
     if (success) {
       setState((prev) => ({ ...prev, isListening: true }));
+    } else {
+      toast.error('Speech recognition not supported in this browser');
     }
   }, [sendMessage]);
 
@@ -233,7 +182,7 @@ export function useConversation() {
 
   const startConversation = useCallback(async () => {
     // Reset state
-    conversationHistory.current = [{ role: 'system', content: SYSTEM_PROMPT }];
+    conversationHistory.current = [];
     
     setState({
       phase: 'welcome',
@@ -247,30 +196,23 @@ export function useConversation() {
 
     // Get initial greeting from AI
     try {
-      const response = await fetch(
-        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/career-chat`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
-          },
-          body: JSON.stringify({
-            messages: [
-              ...conversationHistory.current,
-              { role: 'user', content: 'Start the career discovery conversation with a warm welcome.' },
-            ],
-          }),
-        }
-      );
+      const { data, error } = await supabase.functions.invoke('career-chat', {
+        body: {
+          messages: [
+            { role: 'user', content: 'Start the career discovery conversation with a warm welcome.' },
+          ],
+        },
+      });
 
-      if (!response.ok) {
-        throw new Error('Failed to start conversation');
+      if (error) {
+        throw new Error(error.message || 'Failed to start conversation');
       }
 
-      const data = await response.json();
-      const aiResponse = data.response;
+      if (data?.error) {
+        throw new Error(data.error);
+      }
 
+      const aiResponse = data.response;
       conversationHistory.current.push({ role: 'assistant', content: aiResponse });
 
       const parsed = parseAIResponse(aiResponse);
@@ -295,6 +237,7 @@ export function useConversation() {
       });
     } catch (error) {
       console.error('Error starting conversation:', error);
+      toast.error(error instanceof Error ? error.message : 'Failed to start conversation');
       setState((prev) => ({ ...prev, isProcessing: false }));
     }
   }, [parseAIResponse]);
@@ -313,7 +256,7 @@ export function useConversation() {
       isProcessing: false,
     });
     
-    conversationHistory.current = [{ role: 'system', content: SYSTEM_PROMPT }];
+    conversationHistory.current = [];
     setCurrentTranscript('');
   }, []);
 
