@@ -1,3 +1,4 @@
+// Career Report View Component
 import React from 'react';
 import { motion } from 'framer-motion';
 import { CareerReport } from '@/types/conversation';
