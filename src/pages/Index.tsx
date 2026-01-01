@@ -95,80 +95,81 @@ const Index = () => {
           </div>
         )}
         <AnimatePresence mode="wait">
-          /* Welcome Screen */
-          <motion.div
-            key="welcome"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            className="flex min-h-[calc(100vh-4rem)] flex-col items-center justify-center px-4"
-          >
+          {!hasStarted ? (
+            /* Welcome Screen */
             <motion.div
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ delay: 0.2, type: 'spring', stiffness: 200 }}
-              className="mb-8"
-            >
-              <div className="relative">
-                <div className="absolute inset-0 animate-pulse rounded-full bg-primary/20 blur-3xl" />
-                <div className="relative flex h-32 w-32 items-center justify-center rounded-full bg-gradient-to-br from-primary via-accent to-secondary">
-                  <Play className="h-12 w-12 text-primary-foreground" />
-                </div>
-              </div>
-            </motion.div>
-
-            <motion.h1
+              key="welcome"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 }}
-              className="mb-4 text-center font-display text-4xl font-bold text-foreground md:text-5xl"
+              exit={{ opacity: 0, y: -20 }}
+              className="flex min-h-[calc(100vh-4rem)] flex-col items-center justify-center px-4"
             >
-              Discover Your <span className="text-primary">Career Path</span>
-            </motion.h1>
-
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4 }}
-              className="mb-8 max-w-md text-center text-lg text-muted-foreground"
-            >
-              Have a voice conversation with our AI counselor to explore careers that match your interests, strengths, and goals.
-            </motion.p>
-
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.5 }}
-            >
-              <Button
-                size="lg"
-                onClick={handleStart}
-                className="gap-2 bg-gradient-to-r from-primary to-accent px-8 py-6 text-lg font-semibold shadow-lg shadow-primary/25 transition-all hover:shadow-xl hover:shadow-primary/30"
+              <motion.div
+                initial={{ scale: 0.8, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ delay: 0.2, type: 'spring', stiffness: 200 }}
+                className="mb-8"
               >
-                <Mic className="h-5 w-5" />
-                Start Conversation
-              </Button>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.7 }}
-              className="mt-12 grid max-w-2xl grid-cols-3 gap-6 text-center"
-            >
-              {[
-                { title: '10 min', subtitle: 'Conversation' },
-                { title: 'AI-Powered', subtitle: 'Analysis' },
-                { title: 'Personalized', subtitle: 'Report' },
-              ].map((item, i) => (
-                <div key={i} className="rounded-xl bg-card/50 p-4">
-                  <div className="text-xl font-bold text-primary">{item.title}</div>
-                  <div className="text-sm text-muted-foreground">{item.subtitle}</div>
+                <div className="relative">
+                  <div className="absolute inset-0 animate-pulse rounded-full bg-primary/20 blur-3xl" />
+                  <div className="relative flex h-32 w-32 items-center justify-center rounded-full bg-gradient-to-br from-primary via-accent to-secondary">
+                    <Play className="h-12 w-12 text-primary-foreground" />
+                  </div>
                 </div>
-              ))}
+              </motion.div>
+
+              <motion.h1
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 }}
+                className="mb-4 text-center font-display text-4xl font-bold text-foreground md:text-5xl"
+              >
+                Discover Your <span className="text-primary">Career Path</span>
+              </motion.h1>
+
+              <motion.p
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4 }}
+                className="mb-8 max-w-md text-center text-lg text-muted-foreground"
+              >
+                Have a voice conversation with our AI counselor to explore careers that match your interests, strengths, and goals.
+              </motion.p>
+
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.5 }}
+              >
+                <Button
+                  size="lg"
+                  onClick={handleStart}
+                  className="gap-2 bg-gradient-to-r from-primary to-accent px-8 py-6 text-lg font-semibold shadow-lg shadow-primary/25 transition-all hover:shadow-xl hover:shadow-primary/30"
+                >
+                  <Mic className="h-5 w-5" />
+                  Start Conversation
+                </Button>
+              </motion.div>
+
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.7 }}
+                className="mt-12 grid max-w-2xl grid-cols-3 gap-6 text-center"
+              >
+                {[
+                  { title: '10 min', subtitle: 'Conversation' },
+                  { title: 'AI-Powered', subtitle: 'Analysis' },
+                  { title: 'Personalized', subtitle: 'Report' },
+                ].map((item, i) => (
+                  <div key={i} className="rounded-xl bg-card/50 p-4">
+                    <div className="text-xl font-bold text-primary">{item.title}</div>
+                    <div className="text-sm text-muted-foreground">{item.subtitle}</div>
+                  </div>
+                ))}
+              </motion.div>
             </motion.div>
-          </motion.div>
-        ) : (
+          ) : (
           /* Conversation Screen */
           <motion.div
             key="conversation"
