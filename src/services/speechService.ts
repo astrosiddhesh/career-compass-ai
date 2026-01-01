@@ -1,6 +1,47 @@
 // Speech-to-Text and Text-to-Speech service using Web Speech API
+
+// Type declarations for Web Speech API
+interface SpeechRecognitionEvent extends Event {
+  resultIndex: number;
+  results: SpeechRecognitionResultList;
+}
+
+interface SpeechRecognitionResultList {
+  length: number;
+  [index: number]: SpeechRecognitionResult;
+}
+
+interface SpeechRecognitionResult {
+  isFinal: boolean;
+  length: number;
+  [index: number]: SpeechRecognitionAlternative;
+}
+
+interface SpeechRecognitionAlternative {
+  transcript: string;
+  confidence: number;
+}
+
+interface SpeechRecognitionInstance extends EventTarget {
+  continuous: boolean;
+  interimResults: boolean;
+  lang: string;
+  start(): void;
+  stop(): void;
+  onresult: ((event: SpeechRecognitionEvent) => void) | null;
+  onend: (() => void) | null;
+  onerror: ((event: Event & { error: string }) => void) | null;
+}
+
+declare global {
+  interface Window {
+    SpeechRecognition: new () => SpeechRecognitionInstance;
+    webkitSpeechRecognition: new () => SpeechRecognitionInstance;
+  }
+}
+
 class SpeechService {
-  private recognition: SpeechRecognition | null = null;
+  private recognition: SpeechRecognitionInstance | null = null;
   private synthesis: SpeechSynthesis;
   private isListening: boolean = false;
   private onTranscriptCallback: ((transcript: string, isFinal: boolean) => void) | null = null;
@@ -120,9 +161,9 @@ class SpeechService {
   }
 
   isSupported(): { stt: boolean; tts: boolean } {
-    const SpeechRecognition = window.SpeechRecognition || (window as any).webkitSpeechRecognition;
+    const SpeechRecognitionAPI = window.SpeechRecognition || window.webkitSpeechRecognition;
     return {
-      stt: !!SpeechRecognition,
+      stt: !!SpeechRecognitionAPI,
       tts: 'speechSynthesis' in window,
     };
   }
