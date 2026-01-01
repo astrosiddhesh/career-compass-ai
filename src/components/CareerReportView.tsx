@@ -5,6 +5,10 @@ import { CareerReport } from '@/types/conversation';
 import { Button } from '@/components/ui/button';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
+import ShareReportButton from '@/components/ShareReportButton';
+import PersonalityBadgeCard from '@/components/PersonalityBadgeCard';
+import DayInLifeSection from '@/components/DayInLifeSection';
+import CollegeCourseMapping from '@/components/CollegeCourseMapping';
 
 interface CareerReportViewProps {
   report: CareerReport;
@@ -13,6 +17,7 @@ interface CareerReportViewProps {
 
 const CareerReportView: React.FC<CareerReportViewProps> = ({ report, onRestart }) => {
   const reportRef = React.useRef<HTMLDivElement>(null);
+  const [localReport, setLocalReport] = React.useState(report);
 
   const handleDownloadPDF = async () => {
     if (!reportRef.current) return;
@@ -44,6 +49,10 @@ const CareerReportView: React.FC<CareerReportViewProps> = ({ report, onRestart }
     } catch (error) {
       console.error('Error generating PDF:', error);
     }
+  };
+
+  const handleShareIdGenerated = (shareId: string) => {
+    setLocalReport(prev => ({ ...prev, shareId }));
   };
 
   return (
@@ -81,6 +90,20 @@ const CareerReportView: React.FC<CareerReportViewProps> = ({ report, onRestart }
 
         {/* Report Content */}
         <div ref={reportRef} className="bg-white rounded-2xl shadow-lg p-6 md:p-8 space-y-8">
+          {/* Personality Badge */}
+          {localReport.personalityBadge && (
+            <motion.section
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.35 }}
+            >
+              <PersonalityBadgeCard 
+                badge={localReport.personalityBadge} 
+                studentName={report.studentSnapshot.name} 
+              />
+            </motion.section>
+          )}
+
           {/* Student Snapshot */}
           <motion.section
             initial={{ opacity: 0, y: 20 }}
@@ -157,7 +180,7 @@ const CareerReportView: React.FC<CareerReportViewProps> = ({ report, onRestart }
               <h2 className="text-xl font-semibold text-gray-900">Top Recommended Career Paths</h2>
             </div>
 
-            <div className="space-y-4">
+            <div className="space-y-6">
               {report.recommendedPaths.map((path, index) => (
                 <motion.div
                   key={index}
@@ -197,6 +220,12 @@ const CareerReportView: React.FC<CareerReportViewProps> = ({ report, onRestart }
                           ))}
                         </ul>
                       </div>
+
+                      {/* Day in the Life Videos */}
+                      <DayInLifeSection careerPath={path} index={index} />
+
+                      {/* College/Course Mapping */}
+                      <CollegeCourseMapping careerPath={path} index={index} />
                     </div>
                   </div>
                 </motion.div>
@@ -221,6 +250,12 @@ const CareerReportView: React.FC<CareerReportViewProps> = ({ report, onRestart }
             </svg>
             Download PDF Report
           </Button>
+          
+          <ShareReportButton 
+            report={localReport} 
+            onShareIdGenerated={handleShareIdGenerated}
+          />
+          
           <Button
             onClick={onRestart}
             variant="outline"

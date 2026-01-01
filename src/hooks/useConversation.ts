@@ -53,6 +53,18 @@ export function useConversation() {
       cleanedResponse = cleanedResponse.replace(/<PHASE>[^<]+<\/PHASE>/, '');
     }
 
+    // Extract personality badge
+    let personalityBadge = undefined;
+    const personalityMatch = response.match(/<PERSONALITY>([\s\S]*?)<\/PERSONALITY>/);
+    if (personalityMatch) {
+      try {
+        personalityBadge = JSON.parse(personalityMatch[1]);
+      } catch (e) {
+        console.error('Error parsing personality:', e);
+      }
+      cleanedResponse = cleanedResponse.replace(/<PERSONALITY>[\s\S]*?<\/PERSONALITY>/, '');
+    }
+
     // Extract report
     const reportMatch = response.match(/<REPORT>([\s\S]*?)<\/REPORT>/);
     if (reportMatch) {
@@ -60,6 +72,7 @@ export function useConversation() {
         const reportData = JSON.parse(reportMatch[1]);
         report = {
           ...reportData,
+          personalityBadge,
           generatedAt: new Date(),
         };
       } catch (e) {

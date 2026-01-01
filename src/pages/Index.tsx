@@ -7,9 +7,9 @@ import VoiceOrb from '@/components/VoiceOrb';
 import ConversationDisplay from '@/components/ConversationDisplay';
 import NotePanel from '@/components/NotePanel';
 import CareerReportView from '@/components/CareerReportView';
+import ProgressTracker from '@/components/ProgressTracker';
 import { useConversation } from '@/hooks/useConversation';
 import { speechService } from '@/services/speechService';
-
 const Index = () => {
   const {
     phase,
@@ -86,10 +86,15 @@ const Index = () => {
             </Button>
           )}
         </div>
-      </header>
+        </header>
 
-      <AnimatePresence mode="wait">
-        {!hasStarted ? (
+        {/* Progress Tracker - shown during conversation */}
+        {hasStarted && phase !== 'complete' && (
+          <div className="border-b border-border/50 bg-card/30">
+            <ProgressTracker currentPhase={phase} />
+          </div>
+        )}
+        <AnimatePresence mode="wait">
           /* Welcome Screen */
           <motion.div
             key="welcome"

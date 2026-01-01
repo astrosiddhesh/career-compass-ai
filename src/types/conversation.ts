@@ -18,6 +18,9 @@ export interface CareerPath {
   cluster: string;
   fitReasons: string[];
   applicationHints: string[];
+  dayInLifeVideo?: string;
+  suggestedCourses?: string[];
+  suggestedColleges?: string[];
 }
 
 export interface StudentSnapshot {
@@ -29,10 +32,20 @@ export interface StudentSnapshot {
   keyStrengths: string[];
 }
 
+export interface PersonalityBadge {
+  type: string;
+  title: string;
+  description: string;
+  emoji: string;
+  color: string;
+}
+
 export interface CareerReport {
   studentSnapshot: StudentSnapshot;
   recommendedPaths: CareerPath[];
+  personalityBadge?: PersonalityBadge;
   generatedAt: Date;
+  shareId?: string;
 }
 
 export type ConversationPhase = 

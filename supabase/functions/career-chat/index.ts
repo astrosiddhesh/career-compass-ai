@@ -30,6 +30,27 @@ IMPORTANT: Include structured notes in your response using this format:
 Also indicate the current phase:
 <PHASE>welcome|basic_info|interests|strengths|preferences|career_exploration|summary</PHASE>
 
+When you reach the SUMMARY phase, you MUST also include a PERSONALITY badge based on their traits:
+<PERSONALITY>
+{
+  "type": "One of: The Innovator, The Caregiver, The Analyst, The Creator, The Leader, The Explorer, The Builder, The Connector",
+  "title": "The [Archetype Name]",
+  "description": "A 1-2 sentence description of this personality type based on the student's responses",
+  "emoji": "A single emoji that represents this type",
+  "color": "A hex color code like #8B5CF6"
+}
+</PERSONALITY>
+
+Personality Type Guide:
+- The Innovator: Creative problem-solvers who love new ideas and technology (color: #8B5CF6)
+- The Caregiver: Empathetic helpers who prioritize people's wellbeing (color: #10B981)
+- The Analyst: Logical thinkers who love data and patterns (color: #3B82F6)
+- The Creator: Artistic souls who express through design and art (color: #F59E0B)
+- The Leader: Natural organizers who inspire and guide others (color: #EF4444)
+- The Explorer: Curious adventurers who seek new experiences (color: #06B6D4)
+- The Builder: Practical doers who create tangible things (color: #6366F1)
+- The Connector: Social butterflies who bring people together (color: #EC4899)
+
 When you reach the SUMMARY phase, also include:
 <REPORT>
 {
