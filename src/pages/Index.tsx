@@ -1,12 +1,14 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Play, RotateCcw, Mic, MicOff } from 'lucide-react';
+import { Play, RotateCcw, Mic, MicOff, Send, Keyboard } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import VoiceOrb from '@/components/VoiceOrb';
 import ConversationDisplay from '@/components/ConversationDisplay';
 import NotePanel from '@/components/NotePanel';
 import CareerReportView from '@/components/CareerReportView';
 import { useConversation } from '@/hooks/useConversation';
+import { speechService } from '@/services/speechService';
 
 const Index = () => {
   const {
@@ -21,10 +23,15 @@ const Index = () => {
     startConversation,
     startListening,
     stopListening,
+    sendMessage,
     resetConversation,
   } = useConversation();
 
   const [hasStarted, setHasStarted] = useState(false);
+  const [textInput, setTextInput] = useState('');
+  const [useTextInput, setUseTextInput] = useState(false);
+  
+  const speechSupport = speechService.isSupported();
 
   const handleStart = () => {
     setHasStarted(true);
@@ -41,6 +48,14 @@ const Index = () => {
       stopListening();
     } else {
       startListening();
+    }
+  };
+
+  const handleTextSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (textInput.trim() && !isProcessing) {
+      sendMessage(textInput.trim());
+      setTextInput('');
     }
   };
 
@@ -185,26 +200,70 @@ const Index = () => {
                   )}
                 </div>
 
-                {/* Mic Button */}
-                <Button
-                  size="lg"
-                  variant={isListening ? 'destructive' : 'default'}
-                  onClick={handleMicToggle}
-                  disabled={isProcessing || isSpeaking}
-                  className="mt-4 gap-2 px-8"
-                >
-                  {isListening ? (
-                    <>
-                      <MicOff className="h-5 w-5" />
-                      Stop
-                    </>
+                {/* Input Controls */}
+                <div className="flex flex-col items-center gap-4">
+                  {useTextInput || !speechSupport.stt ? (
+                    /* Text Input Mode */
+                    <form onSubmit={handleTextSubmit} className="flex w-full max-w-md gap-2">
+                      <Input
+                        value={textInput}
+                        onChange={(e) => setTextInput(e.target.value)}
+                        placeholder="Type your response..."
+                        disabled={isProcessing || isSpeaking}
+                        className="flex-1"
+                      />
+                      <Button
+                        type="submit"
+                        disabled={!textInput.trim() || isProcessing || isSpeaking}
+                      >
+                        <Send className="h-4 w-4" />
+                      </Button>
+                    </form>
                   ) : (
-                    <>
-                      <Mic className="h-5 w-5" />
-                      Speak
-                    </>
+                    /* Voice Input Mode */
+                    <Button
+                      size="lg"
+                      variant={isListening ? 'destructive' : 'default'}
+                      onClick={handleMicToggle}
+                      disabled={isProcessing || isSpeaking}
+                      className="gap-2 px-8"
+                    >
+                      {isListening ? (
+                        <>
+                          <MicOff className="h-5 w-5" />
+                          Stop
+                        </>
+                      ) : (
+                        <>
+                          <Mic className="h-5 w-5" />
+                          Speak
+                        </>
+                      )}
+                    </Button>
                   )}
-                </Button>
+
+                  {/* Toggle between voice and text input */}
+                  {speechSupport.stt && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setUseTextInput(!useTextInput)}
+                      className="text-muted-foreground"
+                    >
+                      {useTextInput ? (
+                        <>
+                          <Mic className="mr-2 h-4 w-4" />
+                          Switch to Voice
+                        </>
+                      ) : (
+                        <>
+                          <Keyboard className="mr-2 h-4 w-4" />
+                          Switch to Typing
+                        </>
+                      )}
+                    </Button>
+                  )}
+                </div>
               </div>
 
               {/* Conversation History */}
