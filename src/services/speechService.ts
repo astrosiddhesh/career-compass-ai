@@ -28,6 +28,7 @@ interface SpeechRecognitionInstance extends EventTarget {
   lang: string;
   start(): void;
   stop(): void;
+  onstart: (() => void) | null;
   onresult: ((event: SpeechRecognitionEvent) => void) | null;
   onend: (() => void) | null;
   onerror: ((event: Event & { error: string }) => void) | null;
@@ -81,6 +82,10 @@ class SpeechService {
         }
       };
 
+      this.recognition.onstart = () => {
+        this.isListening = true;
+      };
+
       this.recognition.onend = () => {
         this.isListening = false;
         if (this.onEndCallback) {
@@ -111,7 +116,25 @@ class SpeechService {
       this.recognition.start();
       this.isListening = true;
       return true;
-    } catch (error) {
+    } catch (error: any) {
+      // In Chrome this can intermittently throw if a previous session hasn't fully ended yet.
+      if (error?.name === 'InvalidStateError') {
+        try {
+          this.recognition.stop();
+        } catch {
+          // ignore
+        }
+        setTimeout(() => {
+          try {
+            this.recognition?.start();
+          } catch (retryError) {
+            console.error('Error retrying speech recognition start:', retryError);
+            this.isListening = false;
+          }
+        }, 250);
+        return true;
+      }
+
       console.error('Error starting speech recognition:', error);
       return false;
     }

@@ -165,7 +165,12 @@ export function useConversation() {
     if (success) {
       setState((prev) => ({ ...prev, isListening: true }));
     } else {
-      toast.error('Speech recognition not supported in this browser');
+      const supported = speechService.isSupported().stt;
+      toast.error(
+        supported
+          ? 'Could not start the microphone. Please wait a moment and try again.'
+          : 'Speech recognition is not supported in this browser.'
+      );
     }
   }, [sendMessage]);
 
