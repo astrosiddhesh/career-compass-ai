@@ -2,7 +2,7 @@ import React, { useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { ConversationMessage } from '@/types/conversation';
-import { MessageCircle } from 'lucide-react';
+import { MessageCircle, Sparkles } from 'lucide-react';
 
 interface ConversationDisplayProps {
   messages: ConversationMessage[];
@@ -32,10 +32,10 @@ const ConversationDisplay: React.FC<ConversationDisplayProps> = ({
         {messages.map((message, index) => (
           <motion.div
             key={message.id}
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0, y: 12, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
+            transition={{ duration: 0.3 }}
             className={cn(
               "flex",
               message.role === 'user' ? 'justify-end' : 'justify-start'
@@ -45,8 +45,8 @@ const ConversationDisplay: React.FC<ConversationDisplayProps> = ({
               className={cn(
                 "max-w-[75%] rounded-2xl px-4 py-3",
                 message.role === 'user'
-                  ? 'bg-foreground text-background'
-                  : 'bg-muted text-foreground'
+                  ? 'bg-gradient-to-br from-primary to-primary-dark text-primary-foreground'
+                  : 'bg-card/80 border border-border/50 text-foreground backdrop-blur-sm'
               )}
             >
               <p className="text-sm leading-relaxed">
@@ -55,7 +55,7 @@ const ConversationDisplay: React.FC<ConversationDisplayProps> = ({
               <p
                 className={cn(
                   "text-xs mt-2",
-                  message.role === 'user' ? 'text-background/60 text-right' : 'text-muted-foreground'
+                  message.role === 'user' ? 'text-primary-foreground/60 text-right' : 'text-muted-foreground'
                 )}
               >
                 {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
@@ -71,13 +71,13 @@ const ConversationDisplay: React.FC<ConversationDisplayProps> = ({
             animate={{ opacity: 1, y: 0 }}
             className="flex justify-end"
           >
-            <div className="max-w-[75%] rounded-2xl px-4 py-3 bg-muted border border-border">
+            <div className="max-w-[75%] rounded-2xl px-4 py-3 bg-muted/50 border border-primary/20 backdrop-blur-sm">
               <p className="text-sm text-muted-foreground italic">
                 {currentTranscript}
                 <motion.span
                   animate={{ opacity: [1, 0] }}
                   transition={{ duration: 0.5, repeat: Infinity }}
-                  className="ml-0.5"
+                  className="ml-0.5 text-primary"
                 >
                   |
                 </motion.span>
@@ -95,8 +95,8 @@ const ConversationDisplay: React.FC<ConversationDisplayProps> = ({
             transition={{ delay: 0.2 }}
             className="text-center"
           >
-            <div className="w-14 h-14 mx-auto mb-4 rounded-full bg-muted flex items-center justify-center">
-              <MessageCircle className="w-6 h-6 text-muted-foreground" strokeWidth={1.5} />
+            <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-primary/20 to-accent/10 flex items-center justify-center border border-primary/20">
+              <Sparkles className="w-7 h-7 text-primary" strokeWidth={1.5} />
             </div>
             <h3 className="text-base font-medium text-foreground mb-2">
               Ready to begin

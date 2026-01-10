@@ -56,10 +56,10 @@ const DayInLifeSection: React.FC<DayInLifeSectionProps> = ({ careerPath, index }
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ delay: 0.6 + index * 0.1 }}
-      className="mt-4 p-4 bg-muted rounded-lg border border-border"
+      className="mt-4 p-4 bg-gradient-to-r from-primary/10 to-accent/5 rounded-xl border border-primary/20"
     >
       <div className="flex items-center gap-2 mb-2">
-        <Play className="h-4 w-4 text-foreground" strokeWidth={1.5} />
+        <Play className="h-4 w-4 text-primary" strokeWidth={1.5} />
         <span className="text-sm font-medium text-foreground">Day in the Life</span>
       </div>
       <p className="text-xs text-muted-foreground mb-3">
@@ -69,7 +69,7 @@ const DayInLifeSection: React.FC<DayInLifeSectionProps> = ({ careerPath, index }
         href={videoUrl}
         target="_blank"
         rel="noopener noreferrer"
-        className="inline-flex items-center gap-1.5 text-sm text-foreground hover:text-muted-foreground font-medium transition-colors"
+        className="inline-flex items-center gap-1.5 text-sm text-primary hover:text-accent font-medium transition-colors"
       >
         Explore Videos <ExternalLink className="h-3 w-3" />
       </a>
