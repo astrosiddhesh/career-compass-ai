@@ -20,7 +20,7 @@ const PersonalityBadgeCard: React.FC<PersonalityBadgeCardProps> = ({ badge, stud
     try {
       const canvas = await html2canvas(badgeRef.current, {
         scale: 3,
-        backgroundColor: null,
+        backgroundColor: '#0a0810',
         useCORS: true,
       });
 
@@ -60,35 +60,40 @@ const PersonalityBadgeCard: React.FC<PersonalityBadgeCardProps> = ({ badge, stud
       className="relative"
     >
       <div className="flex items-center gap-3 mb-6">
-        <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center">
-          <Sparkles className="h-5 w-5 text-foreground" strokeWidth={1.5} />
+        <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-glow">
+          <Sparkles className="h-5 w-5 text-primary-foreground" strokeWidth={1.5} />
         </div>
         <h2 className="text-lg font-semibold text-foreground">Your Personality Archetype</h2>
       </div>
 
       <div
         ref={badgeRef}
-        className="relative overflow-hidden rounded-xl p-8 text-center bg-muted border border-border"
+        className="relative overflow-hidden rounded-2xl p-8 text-center gradient-border"
+        style={{ background: 'var(--gradient-card)' }}
       >
-        <div className="space-y-4">
-          <span className="inline-block px-4 py-1.5 rounded-full text-xs font-medium uppercase tracking-wider bg-foreground text-background">
+        {/* Decorative elements */}
+        <div className="absolute -top-20 -right-20 w-40 h-40 bg-primary/20 rounded-full blur-3xl" />
+        <div className="absolute -bottom-20 -left-20 w-40 h-40 bg-accent/15 rounded-full blur-3xl" />
+        
+        <div className="relative space-y-5">
+          <span className="inline-block px-4 py-1.5 rounded-full text-xs font-medium uppercase tracking-wider bg-gradient-to-r from-primary to-accent text-primary-foreground">
             {badge.type}
           </span>
-          <h3 className="text-2xl font-semibold text-foreground">{badge.title}</h3>
+          <h3 className="text-2xl font-bold gradient-text">{badge.title}</h3>
           <p className="text-muted-foreground text-sm max-w-sm mx-auto leading-relaxed">{badge.description}</p>
         </div>
 
-        <div className="mt-6 text-xs text-muted-foreground">
-          {studentName} · Career Discovery
+        <div className="relative mt-6 text-xs text-muted-foreground">
+          {studentName} - Career Discovery
         </div>
       </div>
 
       <div className="flex gap-3 mt-6 justify-center">
-        <Button variant="outline" size="sm" onClick={handleDownload} className="gap-2">
+        <Button variant="outline" size="sm" onClick={handleDownload} className="gap-2 rounded-xl border-border/50 hover:bg-muted/30">
           <Download className="h-4 w-4" />
           Save
         </Button>
-        <Button variant="outline" size="sm" onClick={handleShare} className="gap-2">
+        <Button variant="outline" size="sm" onClick={handleShare} className="gap-2 rounded-xl border-border/50 hover:bg-muted/30">
           <Share2 className="h-4 w-4" />
           Share
         </Button>

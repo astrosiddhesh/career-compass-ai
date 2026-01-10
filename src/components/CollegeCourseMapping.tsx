@@ -8,7 +8,6 @@ interface CollegeCourseMappingProps {
   index: number;
 }
 
-// Map careers to relevant courses and colleges
 const getEducationMapping = (careerName: string, cluster: string) => {
   const careerLower = careerName.toLowerCase();
   const clusterLower = cluster.toLowerCase();
@@ -70,7 +69,6 @@ const getEducationMapping = (careerName: string, cluster: string) => {
     }
   }
 
-  // Default
   return {
     courses: ['Related Field Fundamentals', 'Industry Certifications', 'Professional Development'],
     colleges: ['Top universities in your region', 'Specialized institutes'],
@@ -90,15 +88,15 @@ const CollegeCourseMapping: React.FC<CollegeCourseMappingProps> = ({ careerPath,
       className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-3"
     >
       {/* Courses */}
-      <div className="p-3 bg-gradient-to-r from-teal-50 to-cyan-50 rounded-lg border border-teal-100">
+      <div className="p-3 bg-gradient-to-r from-primary/15 to-primary/5 rounded-xl border border-primary/20">
         <div className="flex items-center gap-2 mb-2">
-          <BookOpen className="h-4 w-4 text-teal-600" />
-          <span className="text-sm font-medium text-teal-900">Recommended Courses</span>
+          <BookOpen className="h-4 w-4 text-primary" />
+          <span className="text-sm font-medium text-foreground">Recommended Courses</span>
         </div>
         <ul className="space-y-1">
           {courses.slice(0, 4).map((course, i) => (
-            <li key={i} className="text-xs text-teal-700 flex items-start gap-1">
-              <span className="text-teal-400">•</span>
+            <li key={i} className="text-xs text-muted-foreground flex items-start gap-1">
+              <span className="text-primary/60">•</span>
               {course}
             </li>
           ))}
@@ -106,15 +104,15 @@ const CollegeCourseMapping: React.FC<CollegeCourseMappingProps> = ({ careerPath,
       </div>
 
       {/* Colleges */}
-      <div className="p-3 bg-gradient-to-r from-amber-50 to-orange-50 rounded-lg border border-amber-100">
+      <div className="p-3 bg-gradient-to-r from-accent/15 to-accent/5 rounded-xl border border-accent/20">
         <div className="flex items-center gap-2 mb-2">
-          <GraduationCap className="h-4 w-4 text-amber-600" />
-          <span className="text-sm font-medium text-amber-900">Top Colleges</span>
+          <GraduationCap className="h-4 w-4 text-accent" />
+          <span className="text-sm font-medium text-foreground">Top Colleges</span>
         </div>
         <ul className="space-y-1">
           {colleges.slice(0, 4).map((college, i) => (
-            <li key={i} className="text-xs text-amber-700 flex items-start gap-1">
-              <span className="text-amber-400">•</span>
+            <li key={i} className="text-xs text-muted-foreground flex items-start gap-1">
+              <span className="text-accent/60">•</span>
               {college}
             </li>
           ))}

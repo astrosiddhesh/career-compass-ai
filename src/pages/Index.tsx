@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowRight, RotateCcw, Mic, MicOff, Send, Keyboard } from 'lucide-react';
+import { ArrowRight, RotateCcw, Mic, MicOff, Send, Keyboard, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import VoiceOrb from '@/components/VoiceOrb';
@@ -67,21 +67,32 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      {/* Decorative gradient orbs */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute -top-40 -right-40 w-96 h-96 bg-primary/20 rounded-full blur-3xl" />
+        <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-accent/15 rounded-full blur-3xl" />
+      </div>
+
       {/* Header */}
-      <header className="border-b border-border">
+      <header className="relative border-b border-border/50 backdrop-blur-xl bg-background/50">
         <div className="max-w-7xl mx-auto flex h-16 items-center justify-between px-6">
           <div className="flex items-center gap-4">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-foreground">
-              <span className="text-sm font-semibold text-background">CD</span>
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-accent shadow-glow">
+              <Sparkles className="h-5 w-5 text-primary-foreground" strokeWidth={1.5} />
             </div>
             <div>
               <h1 className="text-sm font-semibold text-foreground tracking-tight">Career Discovery</h1>
-              <p className="text-xs text-muted-foreground">AI-Powered Guidance</p>
+              <p className="text-xs text-muted-foreground">Your AI-Powered Guide</p>
             </div>
           </div>
           
           {hasStarted && (
-            <Button variant="ghost" size="sm" onClick={handleReset} className="gap-2 text-muted-foreground hover:text-foreground">
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              onClick={handleReset} 
+              className="gap-2 text-muted-foreground hover:text-foreground hover:bg-muted/50"
+            >
               <RotateCcw className="h-4 w-4" />
               Start Over
             </Button>
@@ -91,7 +102,7 @@ const Index = () => {
 
       {/* Progress Tracker */}
       {hasStarted && phase !== 'complete' && (
-        <div className="border-b border-border bg-card">
+        <div className="relative border-b border-border/50 bg-card/30 backdrop-blur-sm">
           <div className="max-w-4xl mx-auto">
             <ProgressTracker currentPhase={phase} />
           </div>
@@ -106,68 +117,87 @@ const Index = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="flex min-h-[calc(100vh-4rem)] flex-col items-center justify-center px-6"
+            className="relative flex min-h-[calc(100vh-4rem)] flex-col items-center justify-center px-6"
           >
             <div className="max-w-xl mx-auto text-center">
               <motion.div
-                initial={{ opacity: 0, y: 16 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.1 }}
-                className="mb-8"
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.1, duration: 0.5 }}
+                className="mb-10"
               >
-                <div className="w-20 h-20 mx-auto rounded-2xl bg-foreground flex items-center justify-center mb-8">
-                  <Mic className="h-8 w-8 text-background" strokeWidth={1.5} />
+                <div className="relative w-28 h-28 mx-auto">
+                  <div className="absolute inset-0 rounded-full orb-glow animate-pulse-glow" />
+                  <div className="relative w-full h-full rounded-full bg-gradient-to-br from-primary via-primary-light to-accent flex items-center justify-center">
+                    <Sparkles className="h-12 w-12 text-primary-foreground" strokeWidth={1.5} />
+                  </div>
                 </div>
               </motion.div>
+
+              <motion.p
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 }}
+                className="text-sm font-medium text-primary mb-4 uppercase tracking-widest"
+              >
+                Meet Your AI Guide
+              </motion.p>
 
               <motion.h1
                 initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2 }}
-                className="text-4xl md:text-5xl font-semibold text-foreground tracking-tight mb-4"
+                transition={{ delay: 0.3 }}
+                className="text-4xl md:text-5xl lg:text-6xl font-bold text-foreground tracking-tight mb-6"
               >
-                Discover Your Path
+                Discover Your
+                <span className="block gradient-text">Perfect Career</span>
               </motion.h1>
 
               <motion.p
                 initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.3 }}
+                transition={{ delay: 0.4 }}
                 className="text-lg text-muted-foreground mb-12 max-w-md mx-auto leading-relaxed"
               >
-                Have a conversation with our AI counselor to explore careers that match your unique profile.
+                Have a voice conversation with our AI counselor and unlock career paths tailored to your unique strengths.
               </motion.p>
 
               <motion.div
                 initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.4 }}
+                transition={{ delay: 0.5 }}
               >
                 <Button
                   size="lg"
                   onClick={handleStart}
-                  className="gap-3 px-8 py-6 text-base font-medium bg-foreground text-background hover:bg-foreground/90"
+                  className="gap-3 px-8 py-6 text-base font-medium btn-primary rounded-2xl"
                 >
-                  Begin Discovery
-                  <ArrowRight className="h-4 w-4" />
+                  Start Discovery
+                  <ArrowRight className="h-5 w-5" />
                 </Button>
               </motion.div>
 
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                transition={{ delay: 0.6 }}
-                className="mt-16 flex justify-center gap-12 text-center"
+                transition={{ delay: 0.7 }}
+                className="mt-16 flex justify-center gap-8 md:gap-16"
               >
                 {[
                   { value: '10 min', label: 'Conversation' },
                   { value: 'AI', label: 'Analysis' },
                   { value: 'Custom', label: 'Report' },
                 ].map((item, i) => (
-                  <div key={i}>
-                    <div className="text-lg font-semibold text-foreground">{item.value}</div>
-                    <div className="text-xs text-muted-foreground mt-1">{item.label}</div>
-                  </div>
+                  <motion.div 
+                    key={i}
+                    initial={{ opacity: 0, y: 12 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.8 + i * 0.1 }}
+                    className="text-center"
+                  >
+                    <div className="text-xl font-bold gradient-text">{item.value}</div>
+                    <div className="text-xs text-muted-foreground mt-1 uppercase tracking-wider">{item.label}</div>
+                  </motion.div>
                 ))}
               </motion.div>
             </div>
@@ -178,12 +208,12 @@ const Index = () => {
             key="conversation"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="flex h-[calc(100vh-8rem)]"
+            className="relative flex h-[calc(100vh-8rem)]"
           >
             {/* Main Conversation Area */}
             <div className="flex flex-1 flex-col">
               {/* Voice Orb Section */}
-              <div className="flex flex-1 flex-col items-center justify-center px-6 py-12">
+              <div className="flex flex-1 flex-col items-center justify-center px-6 py-8">
                 <VoiceOrb
                   isListening={isListening}
                   isSpeaking={isSpeaking}
@@ -202,10 +232,10 @@ const Index = () => {
                     </motion.p>
                   )}
                   {isProcessing && (
-                    <p className="text-muted-foreground text-sm">Processing...</p>
+                    <p className="text-primary text-sm animate-pulse-subtle">Thinking...</p>
                   )}
                   {isSpeaking && (
-                    <p className="text-foreground text-sm">Speaking...</p>
+                    <p className="text-accent text-sm">Speaking...</p>
                   )}
                 </div>
 
@@ -218,12 +248,12 @@ const Index = () => {
                         onChange={(e) => setTextInput(e.target.value)}
                         placeholder="Type your response..."
                         disabled={isProcessing || isSpeaking}
-                        className="flex-1 h-11"
+                        className="flex-1 h-12 bg-card/50 border-border/50 rounded-xl focus:border-primary/50 focus:ring-primary/20"
                       />
                       <Button
                         type="submit"
                         disabled={!textInput.trim() || isProcessing || isSpeaking}
-                        className="h-11 px-4"
+                        className="h-12 px-5 btn-primary rounded-xl"
                       >
                         <Send className="h-4 w-4" />
                       </Button>
@@ -234,7 +264,7 @@ const Index = () => {
                       variant={isListening ? 'destructive' : 'default'}
                       onClick={handleMicToggle}
                       disabled={isProcessing || isSpeaking}
-                      className="gap-2 px-6"
+                      className={`gap-2 px-8 rounded-xl ${!isListening ? 'btn-primary' : ''}`}
                     >
                       {isListening ? (
                         <>
@@ -255,7 +285,7 @@ const Index = () => {
                       variant="ghost"
                       size="sm"
                       onClick={() => setUseTextInput(!useTextInput)}
-                      className="text-muted-foreground hover:text-foreground text-xs"
+                      className="text-muted-foreground hover:text-foreground text-xs hover:bg-muted/30"
                     >
                       {useTextInput ? (
                         <>
@@ -274,7 +304,7 @@ const Index = () => {
               </div>
 
               {/* Conversation History */}
-              <div className="border-t border-border bg-card h-48">
+              <div className="border-t border-border/50 bg-card/30 backdrop-blur-sm h-52">
                 <ConversationDisplay
                   messages={messages}
                   currentTranscript={currentTranscript}
@@ -284,7 +314,7 @@ const Index = () => {
             </div>
 
             {/* Notes Side Panel */}
-            <div className="hidden w-80 border-l border-border lg:block xl:w-96">
+            <div className="hidden w-80 border-l border-border/50 lg:block xl:w-96">
               <NotePanel notes={notes} currentPhase={phase} />
             </div>
           </motion.div>
