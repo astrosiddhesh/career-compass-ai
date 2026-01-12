@@ -26,9 +26,28 @@ const ProgressTracker: React.FC<ProgressTrackerProps> = ({ currentPhase }) => {
   const currentIndex = getPhaseIndex(currentPhase);
 
   return (
-    <div className="w-full py-4">
-      {/* Compact chip-style progress for the Botzy look */}
-      <div className="flex items-center gap-2 flex-wrap">
+    <div className="w-full py-2">
+      {/* Mobile: Simple dot progress */}
+      <div className="flex md:hidden items-center justify-center gap-1.5">
+        {phases.map((phase, index) => {
+          const isCompleted = index < currentIndex;
+          const isCurrent = index === currentIndex;
+
+          return (
+            <motion.div
+              key={phase.key}
+              className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                isCompleted || isCurrent ? 'bg-primary' : 'bg-gray-200'
+              } ${isCurrent ? 'w-6' : ''}`}
+              initial={{ scale: 0.8 }}
+              animate={{ scale: 1 }}
+            />
+          );
+        })}
+      </div>
+
+      {/* Desktop: Chip-style progress */}
+      <div className="hidden md:flex items-center gap-2 flex-wrap">
         {phases.map((phase, index) => {
           const isCompleted = index < currentIndex;
           const isCurrent = index === currentIndex;
@@ -39,20 +58,17 @@ const ProgressTracker: React.FC<ProgressTrackerProps> = ({ currentPhase }) => {
               key={phase.key}
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: index * 0.05 }}
-              className={`
-                chip transition-all duration-300
-                ${isCompleted ? 'chip-active' : ''}
-                ${isCurrent ? 'chip-active border-primary/40' : ''}
-                ${isPending ? 'opacity-60' : ''}
-              `}
+              transition={{ delay: index * 0.03 }}
+              className={`chip transition-all duration-200 ${
+                isCompleted || isCurrent ? 'chip-active' : ''
+              } ${isPending ? 'opacity-50' : ''}`}
             >
               {isCompleted ? (
                 <Check className="w-3 h-3" strokeWidth={2.5} />
               ) : (
                 <phase.Icon className="w-3 h-3" strokeWidth={1.5} />
               )}
-              <span>{phase.label}</span>
+              <span className="text-xs">{phase.label}</span>
             </motion.div>
           );
         })}
