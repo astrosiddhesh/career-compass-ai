@@ -34,11 +34,11 @@ const VoiceOrb: React.FC<VoiceOrbProps> = ({
     },
     listening: {
       label: 'Listening...',
-      scale: 1.06,
+      scale: 1.05,
     },
     speaking: {
       label: 'Speaking...',
-      scale: 1.03,
+      scale: 1.02,
     },
     processing: {
       label: 'Thinking...',
@@ -49,135 +49,68 @@ const VoiceOrb: React.FC<VoiceOrbProps> = ({
   const config = statusConfig[status];
 
   return (
-    <div className="flex flex-col items-center gap-6">
-      <div className="relative orb-container">
-        {/* Outer decorative rings */}
+    <div className="flex flex-col items-center gap-4">
+      <div className="relative">
+        {/* Outer rings */}
         <motion.div
-          className="absolute rounded-full orb-ring"
-          style={{
-            inset: '-20px',
-          }}
+          className="absolute inset-0 rounded-full border border-primary/20"
+          style={{ inset: '-16px' }}
           animate={{
-            opacity: isListening || isSpeaking ? [0.3, 0.5, 0.3] : 0.3,
-            scale: isListening || isSpeaking ? [1, 1.02, 1] : 1,
+            scale: isListening || isSpeaking ? [1, 1.1, 1] : 1,
+            opacity: isListening || isSpeaking ? [0.3, 0.1, 0.3] : 0.2,
           }}
-          transition={{
-            duration: 3,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
+          transition={{ duration: 2, repeat: Infinity }}
         />
         <motion.div
-          className="absolute rounded-full orb-ring"
-          style={{
-            inset: '-40px',
-          }}
+          className="absolute inset-0 rounded-full border border-primary/15"
+          style={{ inset: '-32px' }}
           animate={{
-            opacity: isListening || isSpeaking ? [0.2, 0.35, 0.2] : 0.2,
-            scale: isListening || isSpeaking ? [1, 1.03, 1] : 1,
+            scale: isListening || isSpeaking ? [1, 1.05, 1] : 1,
+            opacity: isListening || isSpeaking ? [0.2, 0.05, 0.2] : 0.1,
           }}
-          transition={{
-            duration: 4,
-            repeat: Infinity,
-            ease: "easeInOut",
-            delay: 0.5,
-          }}
-        />
-        <motion.div
-          className="absolute rounded-full orb-ring"
-          style={{
-            inset: '-60px',
-          }}
-          animate={{
-            opacity: isListening || isSpeaking ? [0.1, 0.25, 0.1] : 0.1,
-          }}
-          transition={{
-            duration: 5,
-            repeat: Infinity,
-            ease: "easeInOut",
-            delay: 1,
-          }}
+          transition={{ duration: 2.5, repeat: Infinity, delay: 0.3 }}
         />
 
-        {/* Animated expanding rings for active states */}
-        {(isListening || isSpeaking) && (
-          <>
-            <motion.div
-              className="absolute inset-0 rounded-full border border-primary/30"
-              animate={{
-                scale: [1, 1.6, 2],
-                opacity: [0.5, 0.2, 0],
-              }}
-              transition={{
-                duration: 2.5,
-                repeat: Infinity,
-                ease: "easeOut",
-              }}
-            />
-            <motion.div
-              className="absolute inset-0 rounded-full border border-accent/25"
-              animate={{
-                scale: [1, 1.4, 1.8],
-                opacity: [0.4, 0.15, 0],
-              }}
-              transition={{
-                duration: 2.5,
-                repeat: Infinity,
-                ease: "easeOut",
-                delay: 0.8,
-              }}
-            />
-          </>
-        )}
-
-        {/* Main orb */}
+        {/* Main orb button */}
         <motion.button
           onClick={onClick}
           disabled={disabled || isSpeaking || isProcessing}
           className={cn(
-            "relative w-36 h-36 rounded-full",
+            "relative w-20 h-20 md:w-24 md:h-24 rounded-full",
             "flex items-center justify-center cursor-pointer",
-            "transition-all duration-500",
+            "transition-all duration-300",
             "orb-glow",
             isListening && "animate-pulse-glow",
             disabled && "opacity-50 cursor-not-allowed"
           )}
-          animate={{
-            scale: config.scale,
-          }}
-          whileHover={!disabled && !isSpeaking && !isProcessing ? { scale: config.scale * 1.04 } : {}}
-          whileTap={!disabled && !isSpeaking && !isProcessing ? { scale: config.scale * 0.96 } : {}}
+          animate={{ scale: config.scale }}
+          whileHover={!disabled && !isSpeaking && !isProcessing ? { scale: config.scale * 1.05 } : {}}
+          whileTap={!disabled && !isSpeaking && !isProcessing ? { scale: config.scale * 0.95 } : {}}
         >
-          {/* Inner glass highlight */}
+          {/* Inner highlight */}
           <div className="orb-inner" />
-          
-          {/* Secondary highlight */}
-          <div className="absolute inset-4 rounded-full bg-gradient-to-br from-white/40 via-transparent to-transparent pointer-events-none" />
           
           {/* Icon */}
           <motion.div className="relative z-10">
             {isProcessing ? (
-              <Loader2 className="w-10 h-10 text-white/90 animate-spin" strokeWidth={1.5} />
+              <Loader2 className="w-8 h-8 text-white animate-spin" strokeWidth={1.5} />
             ) : (
-              <Mic className="w-10 h-10 text-white/90" strokeWidth={1.5} />
+              <Mic className="w-8 h-8 text-white" strokeWidth={1.5} />
             )}
           </motion.div>
 
-          {/* Audio visualizer bars for speaking */}
+          {/* Speaking visualizer */}
           {isSpeaking && (
             <div className="absolute inset-0 flex items-center justify-center gap-1">
-              {[...Array(5)].map((_, i) => (
+              {[...Array(4)].map((_, i) => (
                 <motion.div
                   key={i}
                   className="w-1 bg-white/60 rounded-full"
-                  animate={{
-                    height: [6, 20, 10, 24, 6],
-                  }}
+                  animate={{ height: [4, 16, 8, 20, 4] }}
                   transition={{
-                    duration: 0.7,
+                    duration: 0.6,
                     repeat: Infinity,
-                    delay: i * 0.07,
-                    ease: "easeInOut",
+                    delay: i * 0.08,
                   }}
                 />
               ))}
@@ -188,11 +121,10 @@ const VoiceOrb: React.FC<VoiceOrbProps> = ({
 
       {/* Status label */}
       <motion.p
-        className="text-sm text-muted-foreground font-medium"
+        className="text-xs text-muted-foreground font-medium"
         key={status}
         initial={{ opacity: 0, y: 4 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.3 }}
       >
         {config.label}
       </motion.p>
