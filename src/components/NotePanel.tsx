@@ -23,34 +23,33 @@ const phaseConfig: Record<ConversationPhase, { label: string; Icon: React.Elemen
   complete: { label: 'Discovery Complete', Icon: CheckCircle },
 };
 
-const categoryConfig: Record<string, { Icon: React.ElementType; gradient: string }> = {
-  basic_info: { Icon: User, gradient: 'from-primary/20 to-primary/5' },
-  interests: { Icon: Star, gradient: 'from-accent/20 to-accent/5' },
-  strengths: { Icon: Gem, gradient: 'from-primary-light/20 to-primary-light/5' },
-  preferences: { Icon: Target, gradient: 'from-secondary/30 to-secondary/10' },
-  career_match: { Icon: Rocket, gradient: 'from-accent/20 to-primary/10' },
+const categoryConfig: Record<string, { Icon: React.ElementType; bgClass: string }> = {
+  basic_info: { Icon: User, bgClass: 'bg-primary/5' },
+  interests: { Icon: Star, bgClass: 'bg-accent/10' },
+  strengths: { Icon: Gem, bgClass: 'bg-primary-light/10' },
+  preferences: { Icon: Target, bgClass: 'bg-secondary/30' },
+  career_match: { Icon: Rocket, bgClass: 'bg-accent/10' },
 };
 
 const NotePanel: React.FC<NotePanelProps> = ({ notes, currentPhase }) => {
   const { label: phaseLabel, Icon: PhaseIcon } = phaseConfig[currentPhase];
 
   return (
-    <div className="h-full flex flex-col bg-card/50 backdrop-blur-sm">
+    <div className="h-full flex flex-col">
       {/* Header */}
-      <div className="p-6 border-b border-border/50">
+      <div className="p-6 border-b border-border/30">
         <div className="flex items-center gap-3 mb-5">
-          <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-glow">
-            <PhaseIcon className="h-5 w-5 text-primary-foreground" strokeWidth={1.5} />
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary/20 to-accent/10 flex items-center justify-center border border-primary/20">
+            <PhaseIcon className="h-5 w-5 text-primary" strokeWidth={1.5} />
           </div>
           <div>
-            <h2 className="font-semibold text-foreground">Discovery Notes</h2>
+            <h2 className="font-semibold text-foreground text-sm">Discovery Notes</h2>
             <p className="text-xs text-muted-foreground">{phaseLabel}</p>
           </div>
         </div>
-        <div className="h-1.5 bg-muted rounded-full overflow-hidden">
+        <div className="h-1 bg-border/50 rounded-full overflow-hidden">
           <motion.div
-            className="h-full rounded-full"
-            style={{ background: 'var(--gradient-primary)' }}
+            className="h-full rounded-full bg-gradient-to-r from-primary to-accent"
             initial={{ width: 0 }}
             animate={{
               width: `${(Object.keys(phaseConfig).indexOf(currentPhase) / (Object.keys(phaseConfig).length - 1)) * 100}%`,
@@ -69,8 +68,8 @@ const NotePanel: React.FC<NotePanelProps> = ({ notes, currentPhase }) => {
               animate={{ opacity: 1 }}
               className="flex flex-col items-center justify-center h-full text-center py-12"
             >
-              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary/20 to-accent/10 flex items-center justify-center mb-5 border border-primary/20">
-                <Sparkles className="w-6 h-6 text-primary" strokeWidth={1.5} />
+              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary/10 to-accent/5 flex items-center justify-center mb-5 border border-primary/10">
+                <Sparkles className="w-6 h-6 text-primary/60" strokeWidth={1.5} />
               </div>
               <p className="text-sm text-muted-foreground max-w-[200px]">
                 Notes will appear here as we learn about you
@@ -78,8 +77,8 @@ const NotePanel: React.FC<NotePanelProps> = ({ notes, currentPhase }) => {
             </motion.div>
           ) : (
             notes.map((note, index) => {
-              const config = categoryConfig[note.category] || { Icon: FileText, gradient: 'from-muted/50 to-muted/20' };
-              const { Icon: CategoryIcon, gradient } = config;
+              const config = categoryConfig[note.category] || { Icon: FileText, bgClass: 'bg-muted/30' };
+              const { Icon: CategoryIcon, bgClass } = config;
 
               return (
                 <motion.div
@@ -88,15 +87,13 @@ const NotePanel: React.FC<NotePanelProps> = ({ notes, currentPhase }) => {
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   exit={{ opacity: 0, y: -8, scale: 0.95 }}
                   transition={{ duration: 0.3, delay: index * 0.03 }}
-                  className={cn(
-                    "rounded-xl p-4 border border-border/50 backdrop-blur-sm",
-                    "bg-gradient-to-br transition-all duration-300",
-                    "hover:border-primary/30 hover:shadow-glow",
-                    gradient
-                  )}
+                  className="note-card"
                 >
                   <div className="flex items-start gap-3">
-                    <div className="w-8 h-8 rounded-lg bg-card/80 flex items-center justify-center shrink-0 border border-border/50">
+                    <div className={cn(
+                      "w-8 h-8 rounded-lg flex items-center justify-center shrink-0",
+                      bgClass
+                    )}>
                       <CategoryIcon className="h-4 w-4 text-primary" strokeWidth={1.5} />
                     </div>
                     <div className="flex-1 min-w-0">
@@ -112,9 +109,9 @@ const NotePanel: React.FC<NotePanelProps> = ({ notes, currentPhase }) => {
       </div>
 
       {/* Footer */}
-      <div className="p-4 border-t border-border/50">
+      <div className="p-4 border-t border-border/30">
         <p className="text-xs text-muted-foreground text-center">
-          <span className="gradient-text font-medium">{notes.length}</span> {notes.length === 1 ? 'insight' : 'insights'} captured
+          <span className="text-primary font-medium">{notes.length}</span> {notes.length === 1 ? 'insight' : 'insights'} captured
         </p>
       </div>
     </div>
