@@ -2,7 +2,7 @@ import React, { useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { ConversationMessage } from '@/types/conversation';
-import { MessageCircle, Sparkles } from 'lucide-react';
+import { Sparkles } from 'lucide-react';
 
 interface ConversationDisplayProps {
   messages: ConversationMessage[];
@@ -23,66 +23,67 @@ const ConversationDisplay: React.FC<ConversationDisplayProps> = ({
     }
   }, [messages, currentTranscript]);
 
+  // Show only the last message prominently
+  const lastMessage = messages[messages.length - 1];
+
   return (
     <div
       ref={scrollRef}
-      className="flex-1 overflow-y-auto px-6 py-4 space-y-4"
+      className="flex-1 overflow-y-auto"
     >
       <AnimatePresence mode="popLayout">
-        {messages.map((message, index) => (
+        {messages.length > 0 && lastMessage && (
           <motion.div
-            key={message.id}
-            initial={{ opacity: 0, y: 12, scale: 0.95 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
+            key={lastMessage.id}
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
-            className={cn(
-              "flex",
-              message.role === 'user' ? 'justify-end' : 'justify-start'
-            )}
+            className="mb-4"
           >
-            <div
-              className={cn(
-                "max-w-[75%] rounded-2xl px-4 py-3",
-                message.role === 'user'
-                  ? 'bg-gradient-to-br from-primary to-primary-dark text-primary-foreground'
-                  : 'bg-card/80 border border-border/50 text-foreground backdrop-blur-sm'
+            {lastMessage.role === 'assistant' && (
+              <p className="text-xs text-muted-foreground mb-3">Go ahead, I'm Listening...</p>
+            )}
+            <p className="text-lg md:text-xl leading-relaxed text-foreground">
+              {lastMessage.role === 'user' ? (
+                <>
+                  <span className="font-medium">{lastMessage.content}</span>
+                </>
+              ) : (
+                <>
+                  {lastMessage.content.split(/(\?)/).map((part, i) => (
+                    <span key={i}>
+                      {part}
+                      {part === '?' && <span className="text-primary"> </span>}
+                    </span>
+                  ))}
+                </>
               )}
-            >
-              <p className="text-sm leading-relaxed">
-                {message.content}
+            </p>
+            {lastMessage.role === 'user' && (
+              <p className="text-primary text-sm mt-3">
+                {lastMessage.content.includes('?') ? '' : 'Can you guide me through this one step at a time?'}
               </p>
-              <p
-                className={cn(
-                  "text-xs mt-2",
-                  message.role === 'user' ? 'text-primary-foreground/60 text-right' : 'text-muted-foreground'
-                )}
-              >
-                {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-              </p>
-            </div>
+            )}
           </motion.div>
-        ))}
+        )}
 
         {/* Live transcript while listening */}
         {isListening && currentTranscript && (
           <motion.div
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
-            className="flex justify-end"
           >
-            <div className="max-w-[75%] rounded-2xl px-4 py-3 bg-muted/50 border border-primary/20 backdrop-blur-sm">
-              <p className="text-sm text-muted-foreground italic">
-                {currentTranscript}
-                <motion.span
-                  animate={{ opacity: [1, 0] }}
-                  transition={{ duration: 0.5, repeat: Infinity }}
-                  className="ml-0.5 text-primary"
-                >
-                  |
-                </motion.span>
-              </p>
-            </div>
+            <p className="text-lg text-muted-foreground italic">
+              {currentTranscript}
+              <motion.span
+                animate={{ opacity: [1, 0] }}
+                transition={{ duration: 0.5, repeat: Infinity }}
+                className="ml-0.5 text-primary"
+              >
+                |
+              </motion.span>
+            </p>
           </motion.div>
         )}
       </AnimatePresence>
@@ -95,14 +96,11 @@ const ConversationDisplay: React.FC<ConversationDisplayProps> = ({
             transition={{ delay: 0.2 }}
             className="text-center"
           >
-            <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-primary/20 to-accent/10 flex items-center justify-center border border-primary/20">
-              <Sparkles className="w-7 h-7 text-primary" strokeWidth={1.5} />
+            <div className="w-12 h-12 mx-auto mb-4 rounded-xl bg-gradient-to-br from-primary/10 to-accent/5 flex items-center justify-center border border-primary/10">
+              <Sparkles className="w-5 h-5 text-primary/60" strokeWidth={1.5} />
             </div>
-            <h3 className="text-base font-medium text-foreground mb-2">
-              Ready to begin
-            </h3>
             <p className="text-sm text-muted-foreground max-w-xs">
-              Click the microphone or type to start your career discovery journey
+              Ready to discover your perfect career path
             </p>
           </motion.div>
         </div>
