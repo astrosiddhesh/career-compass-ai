@@ -6,13 +6,15 @@ interface BotAvatarProps {
   size?: 'sm' | 'md' | 'lg' | 'xl';
   isActive?: boolean;
   showGlow?: boolean;
+  isSpeaking?: boolean;
 }
 
 const BotAvatar: React.FC<BotAvatarProps> = ({ 
   variant, 
   size = 'md', 
   isActive = false,
-  showGlow = false 
+  showGlow = false,
+  isSpeaking = false,
 }) => {
   const sizeClasses = {
     sm: 'w-12 h-12',
@@ -90,7 +92,7 @@ const BotAvatar: React.FC<BotAvatarProps> = ({
           fill="#1F2937"
         />
 
-        {/* Eyes */}
+        {/* Eyes with glow animation when speaking */}
         <motion.ellipse 
           cx="40" 
           cy="38" 
@@ -98,10 +100,17 @@ const BotAvatar: React.FC<BotAvatarProps> = ({
           ry={isNeo ? "6" : "5"} 
           fill={primaryColor}
           filter={`url(#glow-${variant})`}
-          animate={isActive ? { 
+          animate={isSpeaking ? { 
+            opacity: [1, 0.6, 1],
+            scale: [1, 1.2, 1],
+          } : isActive ? { 
             scaleY: [1, 0.2, 1],
           } : {}}
-          transition={{ duration: 3, repeat: Infinity, repeatDelay: 2 }}
+          transition={isSpeaking ? { 
+            duration: 0.5, 
+            repeat: Infinity,
+            ease: "easeInOut" 
+          } : { duration: 3, repeat: Infinity, repeatDelay: 2 }}
         />
         <motion.ellipse 
           cx="60" 
@@ -110,28 +119,68 @@ const BotAvatar: React.FC<BotAvatarProps> = ({
           ry={isNeo ? "6" : "5"} 
           fill={primaryColor}
           filter={`url(#glow-${variant})`}
-          animate={isActive ? { 
+          animate={isSpeaking ? { 
+            opacity: [1, 0.6, 1],
+            scale: [1, 1.2, 1],
+          } : isActive ? { 
             scaleY: [1, 0.2, 1],
           } : {}}
-          transition={{ duration: 3, repeat: Infinity, repeatDelay: 2 }}
+          transition={isSpeaking ? { 
+            duration: 0.5, 
+            repeat: Infinity,
+            ease: "easeInOut",
+            delay: 0.1
+          } : { duration: 3, repeat: Infinity, repeatDelay: 2 }}
         />
 
         {/* Eye highlights */}
-        <circle cx="42" cy="36" r="2" fill="white" opacity="0.8" />
-        <circle cx="62" cy="36" r="2" fill="white" opacity="0.8" />
+        <motion.circle 
+          cx="42" 
+          cy="36" 
+          r="2" 
+          fill="white" 
+          opacity="0.8"
+          animate={isSpeaking ? { opacity: [0.8, 1, 0.8] } : {}}
+          transition={{ duration: 0.3, repeat: Infinity }}
+        />
+        <motion.circle 
+          cx="62" 
+          cy="36" 
+          r="2" 
+          fill="white" 
+          opacity="0.8"
+          animate={isSpeaking ? { opacity: [0.8, 1, 0.8] } : {}}
+          transition={{ duration: 0.3, repeat: Infinity, delay: 0.15 }}
+        />
 
-        {/* Mouth/Smile */}
+        {/* Mouth/Smile with animation */}
         {isNeo ? (
-          // Neo - friendly square smile
-          <rect x="43" y="46" width="14" height="4" rx="2" fill={secondaryColor} />
+          // Neo - friendly square smile that animates when speaking
+          <motion.rect 
+            x="43" 
+            y="46" 
+            width="14" 
+            height="4" 
+            rx="2" 
+            fill={secondaryColor}
+            animate={isSpeaking ? { 
+              height: [4, 8, 4],
+              y: [46, 44, 46]
+            } : {}}
+            transition={{ duration: 0.3, repeat: Infinity }}
+          />
         ) : (
-          // Neha - cute curved smile
-          <path 
-            d="M42 47 Q50 53 58 47" 
+          // Neha - cute curved smile that animates when speaking
+          <motion.path 
+            d={isSpeaking ? "M42 47 Q50 55 58 47" : "M42 47 Q50 53 58 47"}
             stroke={secondaryColor} 
             strokeWidth="3" 
             strokeLinecap="round"
             fill="none"
+            animate={isSpeaking ? {
+              d: ["M42 47 Q50 53 58 47", "M42 47 Q50 58 58 47", "M42 47 Q50 53 58 47"]
+            } : {}}
+            transition={{ duration: 0.3, repeat: Infinity }}
           />
         )}
 
